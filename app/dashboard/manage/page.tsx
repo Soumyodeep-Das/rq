@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import QRStyleControls, { QRStyleState, DotType, CornerSquareType } from "@/components/QRStyleControls";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ManageRQs() {
     const [user, setUser] = useState<any>(null);
@@ -181,105 +182,128 @@ export default function ManageRQs() {
         <div className="space-y-6">
             {/* Header ... */}
 
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {rqCodes.map((rq) => {
-                    const style = getQrStyle(rq);
-                    return (
-                        <div
-                            key={rq.$id}
-                            className={`group bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border flex flex-col overflow-hidden transition-all ${rq.isActive
-                                ? "border-zinc-200 dark:border-zinc-800 hover:border-blue-500/50"
-                                : "border-zinc-200 dark:border-zinc-800 opacity-75"
-                                }`}
-                        >
-                            <div className="p-6 flex-1 flex flex-col gap-4">
-                                <div className="bg-white p-4 rounded-xl border border-zinc-100 dark:border-zinc-800 aspect-square flex items-center justify-center relative group-hover:shadow-inner transition-shadow">
-                                    <div className="w-full h-full max-w-[150px]">
-                                        <StyledQRCode
-                                            data={`${window.location.origin}/r/${rq.slug}`}
-                                            width={300}
-                                            height={300}
-                                            className="w-full"
-                                            dotsOptions={{
-                                                color: style.dotsColor || "#000000",
-                                                type: style.dotsType || "extra-rounded"
-                                            }}
-                                            backgroundOptions={{
-                                                color: style.bgColor || "#ffffff"
-                                            }}
-                                            cornersSquareOptions={{
-                                                type: style.cornerType || "extra-rounded",
-                                                color: style.cornerColor || style.dotsColor || "#000000"
-                                            }}
-                                        />
-                                    </div>
-                                    {/* Overlay Actions ... */}
-                                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 backdrop-blur-sm rounded-xl">
-                                        <button
-                                            onClick={() => copyToClipboard(`${window.location.origin}/r/${rq.slug}`)}
-                                            className="p-2 bg-white text-zinc-900 rounded-lg hover:scale-110 transition-transform"
-                                            title="Copy Link"
-                                        >
-                                            <Copy size={18} />
-                                        </button>
-                                        <button
-                                            onClick={() => openCustomizeModal(rq)}
-                                            className="p-2 bg-white text-zinc-900 rounded-lg hover:scale-110 transition-transform"
-                                            title="Customize & Download"
-                                        >
-                                            <Palette size={18} />
-                                        </button>
-                                    </div>
+            {loading ? (
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {[...Array(4)].map((_, i) => (
+                        <div key={i} className="bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-800 p-6 flex flex-col gap-4">
+                            <Skeleton className="w-full aspect-square rounded-xl" />
+                            <div className="space-y-2">
+                                <div className="flex justify-between">
+                                    <Skeleton className="h-4 w-16" />
+                                    <Skeleton className="h-4 w-12 rounded-full" />
                                 </div>
-
-                                {/* ... Content Info ... */}
-                                <div className="space-y-2">
-                                    <div className="flex items-center justify-between">
-                                        <span className="font-mono text-xs font-medium text-zinc-500">/{rq.slug}</span>
-                                        <span className={`text-[10px] px-2 py-0.5 rounded-full border ${rq.isActive ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400" : "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400"}`}>
-                                            {rq.isActive ? "Active" : "Disabled"}
-                                        </span>
-                                    </div>
-                                    <div className="relative group/text">
-                                        <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 line-clamp-2 break-all" title={rq.content}>
-                                            {rq.content}
-                                        </p>
-                                    </div>
-                                    <div className="text-xs text-zinc-500">
-                                        {rq.scanCount} scans • {rq.contentType}
-                                    </div>
-                                </div>
+                                <Skeleton className="h-5 w-3/4" />
+                                <Skeleton className="h-3 w-1/2" />
                             </div>
-
-                            {/* Actions Footer ... */}
-                            {/* ... */}
-                            <div className="p-3 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 flex justify-between items-center gap-2">
-                                <button
-                                    onClick={() => toggleActive(rq)}
-                                    className="p-2 text-zinc-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
-                                    title={rq.isActive ? "Disable" : "Enable"}
-                                >
-                                    {rq.isActive ? <Wifi size={18} /> : <WifiOff size={18} />}
-                                </button>
-                                <button
-                                    onClick={() => openEditModal(rq)}
-                                    className="p-2 text-zinc-500 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg transition-colors"
-                                    title="Edit Content"
-                                >
-                                    <Edit size={18} />
-                                </button>
-                                <button
-                                    onClick={() => handleDelete(rq.$id)}
-                                    className="p-2 text-zinc-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                                    title="Delete"
-                                >
-                                    <Trash2 size={18} />
-                                </button>
+                            <div className="pt-3 border-t border-zinc-100 dark:border-zinc-800 flex justify-between gap-2">
+                                <Skeleton className="h-9 w-9 rounded-lg" />
+                                <Skeleton className="h-9 w-9 rounded-lg" />
+                                <Skeleton className="h-9 w-9 rounded-lg" />
                             </div>
                         </div>
-                    );
-                })}
-            </div>
+                    ))}
+                </div>
+            ) : (
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {rqCodes.map((rq) => {
+                        const style = getQrStyle(rq);
+                        return (
+                            <div
+                                key={rq.$id}
+                                className={`group bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border flex flex-col overflow-hidden transition-all ${rq.isActive
+                                    ? "border-zinc-200 dark:border-zinc-800 hover:border-blue-500/50"
+                                    : "border-zinc-200 dark:border-zinc-800 opacity-75"
+                                    }`}
+                            >
+                                <div className="p-6 flex-1 flex flex-col gap-4">
+                                    <div className="bg-white p-4 rounded-xl border border-zinc-100 dark:border-zinc-800 aspect-square flex items-center justify-center relative group-hover:shadow-inner transition-shadow">
+                                        <div className="w-full h-full max-w-[150px]">
+                                            <StyledQRCode
+                                                data={`${window.location.origin}/r/${rq.slug}`}
+                                                width={300}
+                                                height={300}
+                                                className="w-full"
+                                                dotsOptions={{
+                                                    color: style.dotsColor || "#000000",
+                                                    type: style.dotsType || "extra-rounded"
+                                                }}
+                                                backgroundOptions={{
+                                                    color: style.bgColor || "#ffffff"
+                                                }}
+                                                cornersSquareOptions={{
+                                                    type: style.cornerType || "extra-rounded",
+                                                    color: style.cornerColor || style.dotsColor || "#000000"
+                                                }}
+                                            />
+                                        </div>
+                                        {/* Overlay Actions ... */}
+                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 backdrop-blur-sm rounded-xl">
+                                            <button
+                                                onClick={() => copyToClipboard(`${window.location.origin}/r/${rq.slug}`)}
+                                                className="p-2 bg-white text-zinc-900 rounded-lg hover:scale-110 transition-transform"
+                                                title="Copy Link"
+                                            >
+                                                <Copy size={18} />
+                                            </button>
+                                            <button
+                                                onClick={() => openCustomizeModal(rq)}
+                                                className="p-2 bg-white text-zinc-900 rounded-lg hover:scale-110 transition-transform"
+                                                title="Customize & Download"
+                                            >
+                                                <Palette size={18} />
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* ... Content Info ... */}
+                                    <div className="space-y-2">
+                                        <div className="flex items-center justify-between">
+                                            <span className="font-mono text-xs font-medium text-zinc-500">/{rq.slug}</span>
+                                            <span className={`text-[10px] px-2 py-0.5 rounded-full border ${rq.isActive ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400" : "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400"}`}>
+                                                {rq.isActive ? "Active" : "Disabled"}
+                                            </span>
+                                        </div>
+                                        <div className="relative group/text">
+                                            <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 line-clamp-2 break-all" title={rq.content}>
+                                                {rq.content}
+                                            </p>
+                                        </div>
+                                        <div className="text-xs text-zinc-500">
+                                            {rq.scanCount} scans • {rq.contentType}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Actions Footer ... */}
+                                {/* ... */}
+                                <div className="p-3 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 flex justify-between items-center gap-2">
+                                    <button
+                                        onClick={() => toggleActive(rq)}
+                                        className="p-2 text-zinc-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                                        title={rq.isActive ? "Disable" : "Enable"}
+                                    >
+                                        {rq.isActive ? <Wifi size={18} /> : <WifiOff size={18} />}
+                                    </button>
+                                    <button
+                                        onClick={() => openEditModal(rq)}
+                                        className="p-2 text-zinc-500 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg transition-colors"
+                                        title="Edit Content"
+                                    >
+                                        <Edit size={18} />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(rq.$id)}
+                                        className="p-2 text-zinc-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                        title="Delete"
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
 
             {/* Customization Modal */}
             {customizingRq && (

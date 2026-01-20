@@ -1,9 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { account } from "@/lib/appwrite";
 
-export default function VerifyOTP() {
+function VerifyOTPContent() {
     const params = useSearchParams();
     const userId = params.get("userId");
     const [otp, setOtp] = useState("");
@@ -88,5 +88,31 @@ export default function VerifyOTP() {
                 </form>
             </div>
         </div>
+    );
+}
+
+import { Skeleton } from "@/components/ui/skeleton";
+
+export default function VerifyOTP() {
+    return (
+        <Suspense fallback={
+            <div className="flex min-h-screen items-center justify-center p-4">
+                <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-200 dark:border-zinc-800 p-8 space-y-6">
+                    <div className="text-center space-y-2">
+                        <Skeleton className="h-9 w-48 mx-auto" />
+                        <Skeleton className="h-5 w-64 mx-auto" />
+                    </div>
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            <Skeleton className="h-5 w-32" />
+                            <Skeleton className="h-10 w-full" />
+                        </div>
+                        <Skeleton className="h-11 w-full rounded-lg" />
+                    </div>
+                </div>
+            </div>
+        }>
+            <VerifyOTPContent />
+        </Suspense>
     );
 }
