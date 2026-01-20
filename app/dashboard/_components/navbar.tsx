@@ -22,9 +22,9 @@ export function DashboardNavbar({ onMenuClick, user }: DashboardNavbarProps) {
     };
 
     return (
-        <header className="flex h-16 items-center gap-4 border-b border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-950/50 px-6 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-10 w-full">
+        <header className="flex h-16 items-center gap-4 border-b border-white/5 bg-slate-900/50 px-6 backdrop-blur supports-[backdrop-filter]:bg-slate-900/60 sticky top-0 z-10 w-full text-slate-200">
             <button
-                className="inline-flex md:hidden items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-zinc-100 hover:text-zinc-900 h-10 w-10 -ml-2"
+                className="inline-flex md:hidden items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 hover:bg-white/10 hover:text-white h-10 w-10 -ml-2"
                 onClick={onMenuClick}
             >
                 <Menu size={20} />
@@ -32,7 +32,7 @@ export function DashboardNavbar({ onMenuClick, user }: DashboardNavbarProps) {
             </button>
 
             <div className="flex flex-1 items-center justify-between">
-                <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+                <h1 className="text-lg font-semibold text-white tracking-tight">
                     {getPageTitle()}
                 </h1>
 
@@ -40,12 +40,12 @@ export function DashboardNavbar({ onMenuClick, user }: DashboardNavbarProps) {
                     {/* Placeholder for Search or other top-nav items */}
 
                     {user && (
-                        <div className="flex items-center gap-3 pl-4 border-l border-zinc-200 dark:border-zinc-800">
+                        <div className="flex items-center gap-3 pl-4 border-l border-white/10">
                             <div className="text-right hidden sm:block">
-                                <p className="text-sm font-medium leading-none">{user.name || "User"}</p>
-                                <p className="text-xs text-zinc-500 dark:text-zinc-400">{user.email}</p>
+                                <p className="text-sm font-medium leading-none text-white">{user.name || "User"}</p>
+                                <p className="text-xs text-slate-400">{user.email}</p>
                             </div>
-                            <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs">
+                            <div className="h-8 w-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold text-xs ring-2 ring-transparent group-hover:ring-cyan-500/20 transition-all">
                                 {user.email?.charAt(0).toUpperCase()}
                             </div>
                         </div>

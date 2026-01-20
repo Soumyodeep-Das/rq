@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import { account, databases, DATABASE_ID, COLLECTION_ID } from "@/lib/appwrite";
 import { Query } from "appwrite";
-import { Activity, QrCode, Zap } from "lucide-react";
+import { Activity, QrCode, Zap, Plus } from "lucide-react";
+import Link from "next/link";
 
 export default function DashboardOverview() {
     const [loading, setLoading] = useState(true);
@@ -46,9 +47,18 @@ export default function DashboardOverview() {
 
     return (
         <div className="space-y-8">
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight">Overview</h1>
-                <p className="text-zinc-500 dark:text-zinc-400">Welcome back, {user?.name || user?.email}</p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight">Overview</h1>
+                    <p className="text-zinc-500 dark:text-zinc-400">Welcome back, {user?.name || user?.email}</p>
+                </div>
+                <Link
+                    href="/dashboard/create"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all shadow-lg hover:shadow-blue-500/25"
+                >
+                    <Plus size={20} />
+                    Create New RQ
+                </Link>
             </div>
 
             <div className="grid gap-6 sm:grid-cols-3">

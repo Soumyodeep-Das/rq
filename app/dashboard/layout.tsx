@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { DashboardNavbar } from "./_components/navbar";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export default function DashboardLayout({
     children,
@@ -43,20 +44,20 @@ export default function DashboardLayout({
             await account.deleteSession("current");
             router.push("/login");
         } catch (err: any) {
-            alert(err.message);
+            toast.error(err.message || "Failed to logout");
         }
     }
 
     return (
-        <div className="min-h-screen bg-gray-50/50 dark:bg-black/50 flex flex-col md:flex-row">
+        <div className="min-h-screen bg-slate-950 text-slate-200 flex flex-col md:flex-row font-sans selection:bg-cyan-500/30">
             {/* Sidebar for Desktop */}
-            <aside className="hidden md:flex flex-col w-64 bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 fixed h-full z-20">
-                <div className="p-6 border-b border-zinc-100 dark:border-zinc-800 h-16 flex items-center">
+            <aside className="hidden md:flex flex-col w-64 bg-slate-900/50 backdrop-blur-md border-r border-white/5 fixed h-full z-20">
+                <div className="p-6 border-b border-white/5 h-16 flex items-center">
                     <Link href="/" className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
-                            R
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-cyan-400 font-bold text-lg">
+                            <QrCode size={24} />
                         </div>
-                        <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
+                        <span className="text-xl font-bold tracking-tight text-white">
                             RQ Code
                         </span>
                     </Link>
@@ -73,8 +74,8 @@ export default function DashboardLayout({
                                 className={cn(
                                     "flex items-center gap-3 px-4 py-3 rounded-xl transition-all",
                                     isActive
-                                        ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 font-medium shadow-sm"
-                                        : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100"
+                                        ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-medium shadow-[0_0_15px_rgba(6,182,212,0.1)]"
+                                        : "text-slate-400 hover:bg-white/5 hover:text-white"
                                 )}
                             >
                                 <Icon size={20} />
@@ -84,10 +85,10 @@ export default function DashboardLayout({
                     })}
                 </nav>
 
-                <div className="p-4 border-t border-zinc-100 dark:border-zinc-800">
+                <div className="p-4 border-t border-white/5">
                     <button
                         onClick={handleLogout}
-                        className="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all font-medium"
+                        className="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all font-medium"
                     >
                         <LogOut size={20} />
                         Logout
@@ -96,7 +97,7 @@ export default function DashboardLayout({
             </aside>
 
             {/* Main Content Area */}
-            <div className="flex-1 md:ml-64 flex flex-col min-h-screen">
+            <div className="flex-1 md:ml-64 flex flex-col min-h-screen bg-slate-950">
                 {/* Navbar */}
                 <DashboardNavbar
                     onMenuClick={() => setIsMobileMenuOpen(true)}
@@ -104,25 +105,29 @@ export default function DashboardLayout({
                 />
 
                 {/* Content */}
-                <main className="flex-1 p-6 overflow-x-hidden">
+                <main className="flex-1 p-6 overflow-x-hidden relative">
+                    {/* Background Glow */}
+                    <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[100px] pointer-events-none -z-10" />
                     {children}
                 </main>
             </div>
 
             {/* Mobile Sidebar Overlay */}
             {isMobileMenuOpen && (
-                <div className="md:hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="fixed inset-y-0 left-0 w-3/4 max-w-sm bg-white dark:bg-zinc-900 shadow-xl p-6 flex flex-col animate-in slide-in-from-left duration-200">
+                <div className="md:hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="fixed inset-y-0 left-0 w-3/4 max-w-sm bg-slate-900 border-r border-white/10 shadow-2xl p-6 flex flex-col animate-in slide-in-from-left duration-200">
                         <div className="flex justify-between items-center mb-6">
                             <Link href="/" className="flex items-center gap-2">
-                                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
-                                    R
+                                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-cyan-400 font-bold text-lg">
+                                    <QrCode size={24} />
                                 </div>
-                                <span className="text-xl font-bold">RQ Code</span>
+                                <span className="text-xl font-bold text-white">
+                                    RQ Code
+                                </span>
                             </Link>
                             <button
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="p-2 hover:bg-zinc-100 rounded-full"
+                                className="p-2 hover:bg-white/10 rounded-full text-slate-400 hover:text-white"
                             >
                                 <X size={24} />
                             </button>
@@ -140,8 +145,8 @@ export default function DashboardLayout({
                                         className={cn(
                                             "flex items-center gap-3 px-4 py-3 rounded-xl transition-all",
                                             isActive
-                                                ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 font-medium"
-                                                : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                                                ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-medium"
+                                                : "text-slate-400 hover:bg-white/5 hover:text-white"
                                         )}
                                     >
                                         <Icon size={20} />
@@ -151,10 +156,10 @@ export default function DashboardLayout({
                             })}
                         </nav>
 
-                        <div className="pt-6 border-t border-zinc-100 dark:border-zinc-800">
+                        <div className="pt-6 border-t border-white/10">
                             <button
                                 onClick={handleLogout}
-                                className="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all font-medium"
+                                className="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all font-medium"
                             >
                                 <LogOut size={20} />
                                 Logout
