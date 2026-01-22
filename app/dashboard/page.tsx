@@ -1,32 +1,35 @@
 "use client";
 import { useEffect, useState } from "react";
-import { account, databases, DATABASE_ID, COLLECTION_ID } from "@/lib/appwrite";
+import { account, tables, DATABASE_ID, COLLECTION_ID } from "@/lib/appwrite";
+import { useAuthStore } from "@/store/useAuthStore";
 import { Query } from "appwrite";
 import { Activity, QrCode, Zap, Plus } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useRouter } from "next/navigation";
 
-export default function DashboardOverview() {
+export default function Dashboard() {
+    const { user } = useAuthStore();
+    const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState({
         total: 0,
         active: 0,
         totalScans: 0
     });
-    const [user, setUser] = useState<any>(null);
 
     useEffect(() => {
         async function fetchData() {
-            try {
-                const session = await account.get();
-                setUser(session);
-                const response = await databases.listDocuments(
-                    DATABASE_ID,
-                    COLLECTION_ID,
-                    [Query.equal("userId", session.$id)]
-                );
+            if (!user) return; // Wait for user to be loaded by layout
 
-                const docs = response.documents;
+            try {
+                const response = await tables.listRows({
+                    databaseId: DATABASE_ID,
+                    tableId: COLLECTION_ID,
+                    queries: [Query.equal("userId", user.$id)]
+                });
+
+                const docs = response.rows;
                 const totalScans = docs.reduce((acc: number, doc: any) => acc + (doc.scanCount || 0), 0);
 
                 setStats({
@@ -42,7 +45,7 @@ export default function DashboardOverview() {
             }
         }
         fetchData();
-    }, []);
+    }, [user]);
 
     if (loading) return (
         <div className="space-y-8">

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { databases, DATABASE_ID, COLLECTION_ID, client } from "@/lib/appwrite"; // Added client export to lib/appwrite.ts needed
+import { tables, DATABASE_ID, COLLECTION_ID, client } from "@/lib/appwrite";
 import { Query } from "appwrite";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -12,12 +12,12 @@ export function useRQCodes(userId?: string) {
         queryKey,
         queryFn: async () => {
             if (!userId) return [];
-            const response = await databases.listDocuments(
-                DATABASE_ID,
-                COLLECTION_ID,
-                [Query.equal("userId", userId), Query.orderDesc("$createdAt")]
-            );
-            return response.documents;
+            const response = await tables.listRows({
+                databaseId: DATABASE_ID,
+                tableId: COLLECTION_ID,
+                queries: [Query.equal("userId", userId), Query.orderDesc("$createdAt")]
+            });
+            return response.rows;
         },
         enabled: !!userId,
     });
@@ -50,7 +50,11 @@ export function useDeleteRQ() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (id: string) => {
-            await databases.deleteDocument(DATABASE_ID, COLLECTION_ID, id);
+            await tables.deleteRow({
+                databaseId: DATABASE_ID,
+                tableId: COLLECTION_ID,
+                rowId: id
+            });
         },
         onSuccess: () => {
             toast.success("RQ Code deleted successfully");
@@ -66,7 +70,12 @@ export function useUpdateRQ() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async ({ id, data }: { id: string; data: any }) => {
-            return await databases.updateDocument(DATABASE_ID, COLLECTION_ID, id, data);
+            return await tables.updateRow({
+                databaseId: DATABASE_ID,
+                tableId: COLLECTION_ID,
+                rowId: id,
+                data
+            });
         },
         onSuccess: () => {
             toast.success("Updated successfully");

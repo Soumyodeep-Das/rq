@@ -25,7 +25,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     },
     logout: async () => {
         try {
-            await account.deleteSession("current");
+            await account.deleteSession({ sessionId: "current" });
             set({ user: null });
         } catch (error) {
             console.error(error);

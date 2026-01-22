@@ -1,14 +1,16 @@
 "use client";
 import { useState } from "react";
-import { databases, DATABASE_ID, COLLECTION_ID, account } from "@/lib/appwrite";
+import { tables, DATABASE_ID, COLLECTION_ID } from "@/lib/appwrite";
 import { ID } from "appwrite";
 import { useRouter } from "next/navigation";
 import { nanoid } from "nanoid";
 import QRStyleControls, { QRStyleState, DotType, CornerSquareType } from "@/components/QRStyleControls";
 import StyledQRCode from "@/components/StyledQRCode";
 import { Loader2, ArrowLeft } from "lucide-react";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function CreateRQ() {
+    const { user } = useAuthStore();
     const [content, setContent] = useState("");
     const [contentType, setContentType] = useState<"url" | "text">("url");
     const [loading, setLoading] = useState(false);
@@ -30,18 +32,23 @@ export default function CreateRQ() {
         setLoading(true);
         setError("");
 
+        if (!user) {
+            setError("You must be logged in to create a code");
+            setLoading(false);
+            return;
+        }
+
         try {
-            const user = await account.get();
             const slug = nanoid(6);
 
             // Serialize options
             const qrOptions = JSON.stringify(qrStyle);
 
-            await databases.createDocument(
-                DATABASE_ID,
-                COLLECTION_ID,
-                ID.unique(),
-                {
+            await tables.createRow({
+                databaseId: DATABASE_ID,
+                tableId: COLLECTION_ID,
+                rowId: ID.unique(),
+                data: {
                     userId: user.$id,
                     slug: slug,
                     content: content,
@@ -50,7 +57,7 @@ export default function CreateRQ() {
                     scanCount: 0,
                     qrOptions: qrOptions // Saving the style
                 }
-            );
+            });
 
             router.push("/dashboard/manage");
         } catch (err: any) {

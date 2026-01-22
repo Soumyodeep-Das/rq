@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
 import { account } from "@/lib/appwrite";
-import { ID } from "appwrite";
+import { ID, OAuthProvider } from "appwrite";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { InputField } from "@/components/auth/InputField";
 import { SocialLogin } from "@/components/auth/SocialLogin";
-import { User, Mail, Lock } from "lucide-react";
+import { User, Mail, Lock, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { AuthNavbar } from "@/components/auth/AuthNavbar";
 
@@ -15,30 +15,87 @@ export default function SignupPage() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
 
     async function handleSignup(e: React.FormEvent) {
         e.preventDefault();
         setError("");
         setLoading(true);
         try {
-            await account.create(
-                ID.unique(),
+            await account.create({
+                userId: ID.unique(),
                 email,
                 password,
                 name
-            );
+            });
 
-            // Auto-login after signup
             await account.createEmailPasswordSession({
                 email,
                 password,
             });
 
-            window.location.href = "/dashboard";
+            // Send verification email
+            await account.createEmailVerification({
+                url: `${window.location.origin}/verify-email`
+            });
+
+            setSuccess(true);
+            setLoading(false);
         } catch (err: any) {
             setError(err.message);
             setLoading(false);
         }
+    }
+
+    async function handleGoogleLogin() {
+        try {
+            const result = account.createOAuth2Session({
+                provider: OAuthProvider.Google,
+                success: `${window.location.origin}/dashboard`,
+                failure: `${window.location.origin}/signup`,
+            });
+
+            if (result) {
+                window.location.href = result;
+            }
+        } catch (err: any) {
+            setError(err.message);
+        }
+    }
+
+    if (success) {
+        return (
+            <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-cyan-500/30 flex items-center justify-center p-4 relative overflow-hidden">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[800px] bg-cyan-500/10 rounded-full blur-[100px] -z-10 pointer-events-none" />
+                <AuthNavbar />
+                <AuthLayout
+                    title="Check your inbox"
+                    subtitle="We sent you a verification link."
+                    linkText="Didn't receive it?"
+                    linkActionText="Resend"
+                    linkHref="#"
+                >
+                    <div className="flex flex-col items-center justify-center py-6 text-center space-y-6">
+                        <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center">
+                            <CheckCircle className="w-10 h-10 text-green-500" />
+                        </div>
+                        <div className="space-y-2">
+                            <p className="text-white font-medium text-lg">Verification email sent to:</p>
+                            <p className="text-cyan-400 font-mono">{email}</p>
+                        </div>
+                        <p className="text-slate-400 text-sm max-w-xs mx-auto">
+                            Please click the link in the email to verify your account. You can close this tab.
+                        </p>
+                        <button
+                            onClick={() => window.location.href = '/login'}
+                            className="mt-4 px-6 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-white transition-colors text-sm font-medium"
+                        >
+                            Go to Login
+                        </button>
+                    </div>
+                </AuthLayout>
+            </div>
+        );
     }
 
     return (
@@ -56,7 +113,7 @@ export default function SignupPage() {
                 linkHref="/login"
             >
                 <div className="space-y-4">
-                    <SocialLogin />
+                    <SocialLogin onClick={handleGoogleLogin} />
 
                     <div className="relative flex py-2 items-center">
                         <div className="flex-grow border-t border-slate-700"></div>

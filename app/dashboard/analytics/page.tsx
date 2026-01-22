@@ -1,27 +1,29 @@
 "use client";
 import { useEffect, useState } from "react";
-import { account, databases, DATABASE_ID, COLLECTION_ID } from "@/lib/appwrite";
+import { tables, DATABASE_ID, COLLECTION_ID } from "@/lib/appwrite";
 import { Query } from "appwrite";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Analytics() {
     const [loading, setLoading] = useState(true);
     const [rqData, setRqData] = useState<any[]>([]);
+    const { user } = useAuthStore();
 
     useEffect(() => {
         async function fetchData() {
+            if (!user) return;
             try {
-                const session = await account.get();
-                const response = await databases.listDocuments(
-                    DATABASE_ID,
-                    COLLECTION_ID,
-                    [Query.equal("userId", session.$id), Query.orderDesc("scanCount"), Query.limit(5)]
-                );
+                const response = await tables.listRows({
+                    databaseId: DATABASE_ID,
+                    tableId: COLLECTION_ID,
+                    queries: [Query.equal("userId", user.$id), Query.orderDesc("scanCount"), Query.limit(5)]
+                });
 
                 // Format data for chart
-                const formattedData = response.documents.map(doc => ({
+                const formattedData = response.rows.map(doc => ({
                     name: `/${doc.slug}`,
                     scans: doc.scanCount,
                     fullSlug: doc.slug

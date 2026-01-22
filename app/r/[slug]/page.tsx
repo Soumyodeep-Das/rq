@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, use } from "react";
-import { databases, DATABASE_ID, COLLECTION_ID } from "@/lib/appwrite";
+import { tables, DATABASE_ID, COLLECTION_ID } from "@/lib/appwrite";
 import { Query } from "appwrite";
 
 export default function RedirectPage({
@@ -18,19 +18,19 @@ export default function RedirectPage({
 
         const fetchAndRedirect = async () => {
             try {
-                const response = await databases.listDocuments(
+                const response = await tables.listRows(
                     DATABASE_ID,
                     COLLECTION_ID,
                     [Query.equal("slug", slug)]
                 );
 
-                if (response.documents.length === 0) {
+                if (response.rows.length === 0) {
                     setError("RQ Code not found");
                     setLoading(false);
                     return;
                 }
 
-                const doc = response.documents[0];
+                const doc = response.rows[0];
 
                 if (!doc.isActive) {
                     setError("This RQ Code has been disabled by the owner");
@@ -40,10 +40,15 @@ export default function RedirectPage({
 
                 setRqCode(doc);
 
-                // Increment scan count
-                await databases.updateDocument(DATABASE_ID, COLLECTION_ID, doc.$id, {
-                    scanCount: (doc.scanCount || 0) + 1,
-                });
+                // Increment scanCount
+                await tables.updateRow(
+                    DATABASE_ID,
+                    COLLECTION_ID,
+                    doc.$id,
+                    {
+                        scanCount: (doc.scanCount || 0) + 1,
+                    }
+                );
 
                 if (doc.contentType === "url") {
                     // Add https:// if missing

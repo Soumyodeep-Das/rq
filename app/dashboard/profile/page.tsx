@@ -1,14 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import { account } from "@/lib/appwrite";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Profile() {
-    const [user, setUser] = useState<any>(null);
-
-    useEffect(() => {
-        account.get().then(setUser).catch(console.error);
-    }, []);
+    const { user } = useAuthStore();
 
     if (!user) return (
         <div className="max-w-2xl space-y-6">

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { account } from "@/lib/appwrite";
+import { useAuthStore } from "@/store/useAuthStore";
 import {
     LayoutDashboard,
     QrCode,
@@ -22,14 +23,19 @@ export default function DashboardLayout({
     children: React.ReactNode;
 }) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [user, setUser] = useState<any>(null);
+    const { user, fetchUser, loading } = useAuthStore();
     const pathname = usePathname();
     const router = useRouter();
 
     useEffect(() => {
-        // Fetch user for Navbar profile display
-        account.get().then(setUser).catch(() => { });
-    }, []);
+        fetchUser();
+    }, [fetchUser]);
+
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push("/login");
+        }
+    }, [user, loading, router]);
 
     const navItems = [
         { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -41,7 +47,7 @@ export default function DashboardLayout({
 
     async function handleLogout() {
         try {
-            await account.deleteSession("current");
+            await account.deleteSession({ sessionId: "current" });
             router.push("/login");
         } catch (err: any) {
             toast.error(err.message || "Failed to logout");
