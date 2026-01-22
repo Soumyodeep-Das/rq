@@ -1,15 +1,22 @@
 "use client";
 import { useState } from "react";
 import { account } from "@/lib/appwrite";
-import Link from "next/link";
+import { AuthLayout } from "@/components/auth/AuthLayout";
+import { InputField } from "@/components/auth/InputField";
+import { SocialLogin } from "@/components/auth/SocialLogin";
+import { Mail, Lock, Phone } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { AuthNavbar } from "@/components/auth/AuthNavbar";
 
 export default function LoginPage() {
+    const [method, setMethod] = useState<'email' | 'phone'>('email');
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
-    async function handleLogin(e: any) {
+    async function handleLogin(e: React.FormEvent) {
         e.preventDefault();
         setError("");
         setLoading(true);
@@ -27,92 +34,100 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center p-4">
-            <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-200 dark:border-zinc-800 p-8 space-y-6">
-                <div className="text-center space-y-2">
-                    <h2 className="text-3xl font-bold tracking-tight">Welcome back</h2>
-                    <p className="text-zinc-500 dark:text-zinc-400">
-                        Enter your credentials to access your account
-                    </p>
-                </div>
+        <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-cyan-500/30 flex items-center justify-center p-4 relative overflow-hidden">
+            {/* Global Background Gradient */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[800px] bg-cyan-500/10 rounded-full blur-[100px] -z-10 pointer-events-none" />
 
-                {error && (
-                    <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-sm font-medium text-center">
-                        {error}
-                    </div>
-                )}
+            <AuthNavbar />
 
-                <form onSubmit={handleLogin} className="space-y-4">
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            Email
-                        </label>
-                        <input
-                            type="email"
-                            required
-                            placeholder="name@example.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="flex h-10 w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-3 py-2 text-base md:text-sm placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            required
-                            placeholder="••••••••"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="flex h-10 w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-3 py-2 text-base md:text-sm placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
-                        />
-                    </div>
-
+            <AuthLayout
+                title="Welcome back"
+                subtitle="Log in to manage your QR codes."
+                linkText="Don't have an account?"
+                linkActionText="Sign up"
+                linkHref="/signup"
+            >
+                {/* Tabs */}
+                <div className="grid grid-cols-2 gap-2 p-1 bg-slate-900 rounded-xl mb-6">
                     <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full flex justify-center py-2.5 px-4 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-blue-500/25"
+                        onClick={() => setMethod('email')}
+                        className={`py-2 text-sm font-medium rounded-lg transition-all ${method === 'email' ? 'bg-slate-800 text-white shadow-lg' : 'text-slate-400 hover:text-slate-200'}`}
                     >
-                        {loading ? (
-                            <svg
-                                className="animate-spin h-5 w-5 text-white"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                            >
-                                <circle
-                                    className="opacity-25"
-                                    cx="12"
-                                    cy="12"
-                                    r="10"
-                                    stroke="currentColor"
-                                    strokeWidth="4"
-                                ></circle>
-                                <path
-                                    className="opacity-75"
-                                    fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                ></path>
-                            </svg>
-                        ) : (
-                            "Sign in"
-                        )}
+                        Email
                     </button>
-                </form>
-
-                <div className="text-center text-sm text-zinc-500 dark:text-zinc-400">
-                    Don&apos;t have an account?{" "}
-                    <Link
-                        href="/signup"
-                        className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                    <button
+                        onClick={() => setMethod('phone')}
+                        className={`py-2 text-sm font-medium rounded-lg transition-all ${method === 'phone' ? 'bg-slate-800 text-white shadow-lg' : 'text-slate-400 hover:text-slate-200'}`}
                     >
-                        Sign up
-                    </Link>
+                        Phone OTP
+                    </button>
                 </div>
-            </div>
+
+                <div className="space-y-4">
+                    <SocialLogin />
+
+                    <div className="relative flex py-2 items-center">
+                        <div className="flex-grow border-t border-slate-700"></div>
+                        <span className="flex-shrink mx-4 text-slate-500 text-xs uppercase tracking-wider">Or continue with</span>
+                        <div className="flex-grow border-t border-slate-700"></div>
+                    </div>
+
+                    {error && (
+                        <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 text-sm font-medium text-center">
+                            {error}
+                        </div>
+                    )}
+
+                    {method === 'email' ? (
+                        <form className="space-y-4" onSubmit={handleLogin}>
+                            <InputField
+                                type="email"
+                                placeholder="name@example.com"
+                                icon={Mail}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                            <InputField
+                                type="password"
+                                placeholder="Password"
+                                icon={Lock}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <div className="flex justify-end">
+                                <a href="#" className="text-xs text-slate-400 hover:text-cyan-400">Forgot password?</a>
+                            </div>
+                            <button
+                                disabled={loading}
+                                className="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-[0_0_15px_rgba(6,182,212,0.3)] hover:shadow-[0_0_20px_rgba(6,182,212,0.5)] disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center"
+                            >
+                                {loading ? (
+                                    <svg className="animate-spin h-5 w-5 text-slate-950" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                ) : "Sign In"}
+                            </button>
+                        </form>
+                    ) : (
+                        <div className="space-y-4">
+                            <InputField
+                                type="tel"
+                                placeholder="+1 (555) 000-0000"
+                                icon={Phone}
+                            />
+                            <button
+                                onClick={() => router.push('/phone-login')}
+                                className="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-[0_0_15px_rgba(6,182,212,0.3)] hover:shadow-[0_0_20px_rgba(6,182,212,0.5)]"
+                            >
+                                Go to Phone Login
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </AuthLayout>
         </div>
     );
 }
