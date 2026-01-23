@@ -73,7 +73,7 @@ export default function Dashboard() {
                 <Link
                     href="/dashboard/create"
                     className={cn(
-                        "flex items-center gap-3 px-4 py-3 rounded-xl transition-all",
+                        "flex items-center justify-center gap-3 px-4 py-3 rounded-xl transition-all w-full sm:w-auto",
                         "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-medium shadow-[0_0_15px_rgba(6,182,212,0.1)] hover:bg-cyan-500/20"
                     )}
                 >

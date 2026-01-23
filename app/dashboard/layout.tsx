@@ -111,7 +111,7 @@ export default function DashboardLayout({
                 />
 
                 {/* Content */}
-                <main className="flex-1 p-6 overflow-x-hidden relative">
+                <main className="flex-1 p-4 md:p-6 overflow-x-hidden relative">
                     {/* Background Glow */}
                     <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[100px] pointer-events-none -z-10" />
                     {children}

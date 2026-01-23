@@ -78,8 +78,8 @@ export default function CreateRQ() {
                     <ArrowLeft size={20} />
                 </button>
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Create New RQ</h1>
-                    <p className="text-slate-500 dark:text-slate-400">
+                    <h1 className="text-2xl font-bold tracking-tight text-white">Create New RQ</h1>
+                    <p className="text-slate-200 dark:text-slate-400">
                         Set up your content and style.
                     </p>
                 </div>
@@ -106,7 +106,7 @@ export default function CreateRQ() {
                                     }}
                                 />
                             </div>
-                            <p className="text-sm text-slate-500 text-center font-medium">
+                            <p className="text-sm text-slate-200 text-center font-medium">
                                 Live Preview
                             </p>
                         </div>
@@ -187,7 +187,7 @@ export default function CreateRQ() {
                                 </div>
                             </div>
 
-                            <div className="flex gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
+                            <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
                                 <button
                                     type="button"
                                     onClick={() => router.back()}

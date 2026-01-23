@@ -181,13 +181,13 @@ export default function ManageRQs() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center p-6 rounded-2xl shadow-sm">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-6 rounded-2xl shadow-sm">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-slate-100 dark:text-slate-100">Manage RQs</h1>
                     <p className="text-slate-200 text-sm mt-1">View and manage all your generated RQ codes.</p>
                 </div>
                 <Link href="/dashboard/create" className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-xl transition-all",
+                    "flex items-center justify-center gap-3 px-4 py-3 rounded-xl transition-all w-full md:w-auto",
                     "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-medium shadow-[0_0_15px_rgba(6,182,212,0.1)] hover:bg-cyan-500/20"
                 )}>
                     <Plus size={18} />

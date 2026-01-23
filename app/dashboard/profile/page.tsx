@@ -26,7 +26,7 @@ export default function Profile() {
             <h1 className="text-2xl font-bold text-white">Your Profile</h1>
 
             <div className="bg-slate-200 dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-                <div className="flex items-center gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 pb-4 border-b border-slate-100 dark:border-slate-800 text-center sm:text-left">
                     <div className="w-20 h-20 rounded-full bg-blue-600 text-white text-3xl font-bold flex items-center justify-center shadow-lg shadow-blue-500/20">
                         {user.email?.charAt(0).toUpperCase()}
                     </div>
