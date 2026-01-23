@@ -7,6 +7,7 @@ import { Activity, QrCode, Zap, Plus } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export default function Dashboard() {
     const { user } = useAuthStore();
@@ -66,12 +67,15 @@ export default function Dashboard() {
         <div className="space-y-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Overview</h1>
-                    <p className="text-slate-500 dark:text-slate-400">Welcome back, {user?.name || user?.email}</p>
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900 text-white">Overview</h1>
+                    <p className="text-slate-200">Welcome back, {user?.name || user?.email}</p>
                 </div>
                 <Link
                     href="/dashboard/create"
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all shadow-lg hover:shadow-blue-500/25"
+                    className={cn(
+                        "flex items-center gap-3 px-4 py-3 rounded-xl transition-all",
+                        "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-medium shadow-[0_0_15px_rgba(6,182,212,0.1)] hover:bg-cyan-500/20"
+                    )}
                 >
                     <Plus size={20} />
                     Create New RQ
@@ -79,41 +83,41 @@ export default function Dashboard() {
             </div>
 
             <div className="grid gap-6 sm:grid-cols-3">
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 flex items-center gap-4">
+                <div className="bg-slate-400 dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-cyan-500/20 dark:border-slate-800 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                         <QrCode size={24} />
                     </div>
                     <div>
-                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Total RQs</p>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{stats.total}</h2>
+                        <p className="text-sm font-bold text-slate-200 dark:text-slate-400">Total RQs</p>
+                        <h2 className="text-2xl font-bold text-slate-100 dark:text-slate-100">{stats.total}</h2>
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 flex items-center gap-4">
+                <div className="bg-slate-400 dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-cyan-500/20 dark:border-slate-800 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                         <Zap size={24} />
                     </div>
                     <div>
-                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Active Codes</p>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{stats.active}</h2>
+                        <p className="text-sm font-bold text-slate-200 dark:text-slate-400">Active Codes</p>
+                        <h2 className="text-2xl font-bold text-slate-100 dark:text-slate-100">{stats.active}</h2>
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 flex items-center gap-4">
+                <div className="bg-slate-400 dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-cyan-500/20 dark:border-slate-800 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center">
                         <Activity size={24} />
                     </div>
                     <div>
-                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Total Scans</p>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{stats.totalScans}</h2>
+                        <p className="text-sm font-bold text-slate-200 dark:text-slate-400">Total Scans</p>
+                        <h2 className="text-2xl font-bold text-slate-100 dark:text-slate-100">{stats.totalScans}</h2>
                     </div>
                 </div>
             </div>
 
             {/* Recent Activity Placeholder */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
-                <h3 className="font-semibold text-lg mb-4 text-slate-900 dark:text-white">Recent Activity</h3>
-                <div className="text-center py-10 text-slate-500">
+            <div className="bg-slate-400 dark:bg-slate-900 rounded-2xl border border-cyan-500/20 dark:border-slate-800 p-6">
+                <h3 className="font-semibold text-lg mb-4 text-slate-100 dark:text-white">Recent Activity</h3>
+                <div className="text-center py-10 text-slate-200">
                     <Activity className="w-12 h-12 mx-auto mb-2 opacity-20" />
                     <p>No recent activity detailed yet.</p>
                 </div>

@@ -33,7 +33,7 @@ export function DashboardNavbar({ onMenuClick, user }: DashboardNavbarProps) {
 
             <div className="flex flex-1 items-center justify-between">
                 <h1 className="text-lg font-semibold text-white tracking-tight">
-                    {getPageTitle()}
+                    {/* {getPageTitle()} */}
                 </h1>
 
                 <div className="flex items-center gap-4">

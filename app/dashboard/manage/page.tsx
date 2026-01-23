@@ -2,14 +2,19 @@
 import { useState } from "react"; // Removed useEffect
 import { useRouter } from "next/navigation";
 import StyledQRCode from "@/components/StyledQRCode";
-import { Trash2, Copy, Edit, Wifi, WifiOff, Palette, Plus } from "lucide-react";
+import { Trash2, Copy, Edit, Wifi, WifiOff, Palette, Plus, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import QRStyleControls, { QRStyleState, DotType, CornerSquareType } from "@/components/QRStyleControls";
+import QRCodeStyling, {
+    CornerDotType,
+} from "qr-code-styling";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+
 import { useAuthStore } from "@/store/useAuthStore";
 import { useRQCodes, useDeleteRQ, useUpdateRQ } from "@/hooks/useRQCodes";
+import { cn } from "@/lib/utils";
 
 export default function ManageRQs() {
     const { user } = useAuthStore();
@@ -131,18 +136,62 @@ export default function ManageRQs() {
         setNewContent(rq.content || "");
     };
 
+    const handleQuickDownload = async (rq: any) => {
+        try {
+            const style = getQrStyle(rq);
+            const qr = new QRCodeStyling({
+                width: 300,
+                height: 300,
+                type: "svg",
+                data: `${window.location.origin}/r/${rq.slug}`,
+                margin: 10,
+                imageOptions: {
+                    hideBackgroundDots: true,
+                    imageSize: 0.4,
+                    margin: 10,
+                    crossOrigin: "anonymous",
+                },
+                dotsOptions: {
+                    color: style.dotsColor || "#000000",
+                    type: (style.dotsType || "extra-rounded") as DotType,
+                },
+                backgroundOptions: {
+                    color: style.bgColor || "#ffffff",
+                },
+                cornersSquareOptions: {
+                    type: (style.cornerType || "extra-rounded") as CornerSquareType,
+                    color: style.cornerColor || style.dotsColor || "#000000",
+                },
+                cornersDotOptions: {
+                    type: "dot" as CornerDotType,
+                    color: style.cornerColor || style.dotsColor || "#000000",
+                },
+            });
+
+            await qr.download({
+                name: `rq-${rq.slug}`,
+                extension: "png",
+            });
+            toast.success("Download started!");
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to generate download");
+        }
+    };
+
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+            <div className="flex justify-between items-center p-6 rounded-2xl shadow-sm">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Manage RQs</h1>
-                    <p className="text-slate-500 text-sm mt-1">View and manage all your generated RQ codes.</p>
+                    <h1 className="text-2xl font-bold tracking-tight text-slate-100 dark:text-slate-100">Manage RQs</h1>
+                    <p className="text-slate-200 text-sm mt-1">View and manage all your generated RQ codes.</p>
                 </div>
-                <Link href="/dashboard/create">
-                    <Button className="gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/20 transition-all hover:scale-105 active:scale-95">
-                        <Plus size={18} />
-                        Create New RQ
-                    </Button>
+                <Link href="/dashboard/create" className={cn(
+                    "flex items-center gap-3 px-4 py-3 rounded-xl transition-all",
+                    "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-medium shadow-[0_0_15px_rgba(6,182,212,0.1)] hover:bg-cyan-500/20"
+                )}>
+                    <Plus size={18} />
+                    Create New RQ
                 </Link>
             </div>
 
@@ -174,9 +223,9 @@ export default function ManageRQs() {
                         return (
                             <div
                                 key={rq.$id}
-                                className={`group bg-white dark:bg-slate-900 rounded-2xl shadow-sm border flex flex-col overflow-hidden transition-all ${rq.isActive
-                                    ? "border-slate-200 dark:border-slate-800 hover:border-blue-500/50 hover:shadow-md hover:shadow-blue-500/10"
-                                    : "border-slate-200 dark:border-slate-800 opacity-75 grayscale"
+                                className={`group bg-slate-400 dark:bg-slate-900 rounded-2xl shadow-sm border flex flex-col overflow-hidden transition-all ${rq.isActive
+                                    ? "border-cyan-500/20 dark:border-slate-800 hover:border-cyan-500/50 hover:shadow-md hover:shadow-cyan-500/10"
+                                    : "border-cyan-500/20 dark:border-slate-800 opacity-75 grayscale"
                                     }`}
                             >
                                 <div className="p-6 flex-1 flex flex-col gap-4">
@@ -216,6 +265,13 @@ export default function ManageRQs() {
                                             >
                                                 <Palette size={18} />
                                             </button>
+                                            <button
+                                                onClick={() => handleQuickDownload(rq)}
+                                                className="p-2 bg-white text-slate-900 rounded-lg hover:scale-110 transition-transform shadow-lg"
+                                                title="Quick Download PNG"
+                                            >
+                                                <Download size={18} />
+                                            </button>
                                         </div>
                                     </div>
 
@@ -228,11 +284,11 @@ export default function ManageRQs() {
                                             </span>
                                         </div>
                                         <div className="relative group/text">
-                                            <p className="text-sm font-medium text-slate-900 dark:text-slate-100 line-clamp-2 break-all" title={rq.content}>
+                                            <p className="text-sm font-medium text-slate-100 dark:text-slate-100 line-clamp-2 break-all" title={rq.content}>
                                                 {rq.content}
                                             </p>
                                         </div>
-                                        <div className="text-xs text-slate-500 flex items-center gap-1">
+                                        <div className="text-xs text-slate-200 flex items-center gap-1">
                                             {rq.scanCount} scans • <span className="capitalize">{rq.contentType}</span>
                                         </div>
                                     </div>
@@ -273,7 +329,7 @@ export default function ManageRQs() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
                     <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-4xl w-full p-6 md:p-8 flex flex-col md:flex-row gap-8 max-h-[90vh] overflow-y-auto">
                         {/* Preview Section */}
-                        <div className="flex-1 flex flex-col items-center justify-center gap-4 bg-slate-50 dark:bg-black/20 rounded-xl p-8 border border-slate-100 dark:border-slate-800">
+                        <div className="flex-1 flex flex-col items-center justify-center gap-4 bg-slate-200 dark:bg-black/20 rounded-xl p-8 border border-slate-100 dark:border-slate-800">
                             <h3 className="text-lg font-semibold mb-2 text-slate-900 dark:text-white">Live Preview</h3>
                             <div className="bg-white p-4 rounded-xl shadow-sm ring-1 ring-slate-100 dark:ring-slate-800">
                                 <StyledQRCode
@@ -291,7 +347,7 @@ export default function ManageRQs() {
                                     }}
                                 />
                             </div>
-                            <p className="text-xs text-slate-500 mt-4">Downloads will use the current style.</p>
+                            <p className="text-xs text-slate-700 dark:text-slate-400 mt-4">Downloads will use the current style.</p>
                         </div>
 
                         {/* Controls Section using reusable component */}
@@ -310,7 +366,15 @@ export default function ManageRQs() {
                             <QRStyleControls style={qrStyle} onChange={setQrStyle} />
 
                             <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-                                <Button onClick={handleSaveStyle} className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/20">Save Style Changes</Button>
+                                <button
+                                    onClick={handleSaveStyle}
+                                    className={cn(
+                                        "w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl transition-all",
+                                        "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-medium shadow-[0_0_15px_rgba(6,182,212,0.1)] hover:bg-cyan-500/20"
+                                    )}
+                                >
+                                    Save Style Changes
+                                </button>
                             </div>
                         </div>
                     </div>

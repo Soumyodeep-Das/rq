@@ -52,7 +52,7 @@ export default function Analytics() {
         <div className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
                 {/* Top RQs Chart */}
-                <Card className="col-span-4 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+                <Card className="col-span-4 bg-slate-200 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
                     <CardHeader>
                         <CardTitle className="text-slate-900 dark:text-white">Top Performing RQs</CardTitle>
                         <CardDescription className="text-slate-500 dark:text-slate-400">
@@ -106,7 +106,7 @@ export default function Analytics() {
                 </Card>
 
                 {/* Placeholder for Recent Activity or Other Stats */}
-                <Card className="col-span-3 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+                <Card className="col-span-3 bg-slate-200 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
                     <CardHeader>
                         <CardTitle className="text-slate-900 dark:text-white">Activity Summary</CardTitle>
                         <CardDescription className="text-slate-500 dark:text-slate-400">

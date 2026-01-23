@@ -32,7 +32,7 @@ export default function QRStyleControls({ style, onChange }: QRStyleControlsProp
     return (
         <div className="space-y-4">
             <div>
-                <label className="text-sm font-medium mb-1.5 block">Dots Style</label>
+                <label className="text-sm font-bold mb-1.5 block text-slate-900 dark:text-slate-200">Dots Style</label>
                 <div className="grid grid-cols-3 gap-2">
                     {["rounded", "dots", "classy", "classy-rounded", "square", "extra-rounded"].map(type => (
                         <button
@@ -41,7 +41,7 @@ export default function QRStyleControls({ style, onChange }: QRStyleControlsProp
                             onClick={() => updateStyle('dotsType', type as DotType)}
                             className={`text-xs px-2 py-2 rounded-lg border capitalize ${style.dotsType === type
                                 ? 'bg-blue-50 border-blue-500 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
-                                : 'border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800'}`}
+                                : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'}`}
                         >
                             {type.replace("-", " ")}
                         </button>
@@ -50,7 +50,7 @@ export default function QRStyleControls({ style, onChange }: QRStyleControlsProp
             </div>
 
             <div>
-                <label className="text-sm font-medium mb-1.5 block">Corner Style</label>
+                <label className="text-sm font-bold mb-1.5 block text-slate-900 dark:text-slate-200">Corner Style</label>
                 <div className="grid grid-cols-3 gap-2">
                     {["dot", "square", "extra-rounded"].map(type => (
                         <button
@@ -59,7 +59,7 @@ export default function QRStyleControls({ style, onChange }: QRStyleControlsProp
                             onClick={() => updateStyle('cornerType', type as CornerSquareType)}
                             className={`text-xs px-2 py-2 rounded-lg border capitalize ${style.cornerType === type
                                 ? 'bg-blue-50 border-blue-500 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
-                                : 'border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800'}`}
+                                : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'}`}
                         >
                             {type.replace("-", " ")}
                         </button>
@@ -69,7 +69,7 @@ export default function QRStyleControls({ style, onChange }: QRStyleControlsProp
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <label className="text-sm font-medium mb-1.5 block">Dots Color</label>
+                    <label className="text-sm font-bold mb-1.5 block text-slate-900 dark:text-slate-200">Dots Color</label>
                     <div className="flex items-center gap-2">
                         <input
                             type="color"
@@ -80,7 +80,7 @@ export default function QRStyleControls({ style, onChange }: QRStyleControlsProp
                     </div>
                 </div>
                 <div>
-                    <label className="text-sm font-medium mb-1.5 block">Background</label>
+                    <label className="text-sm font-bold mb-1.5 block text-slate-900 dark:text-slate-200">Background</label>
                     <div className="flex items-center gap-2">
                         <input
                             type="color"

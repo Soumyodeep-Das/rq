@@ -128,7 +128,7 @@ export default function StyledQRCode({
                     variant="outline"
                     size="sm"
                     onClick={() => download("png")}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 text-slate-900 dark:text-slate-200"
                 >
                     <Download size={14} /> PNG
                 </Button>
@@ -136,7 +136,7 @@ export default function StyledQRCode({
                     variant="outline"
                     size="sm"
                     onClick={() => download("svg")}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 text-slate-900 dark:text-slate-200"
                 >
                     <Download size={14} /> SVG
                 </Button>

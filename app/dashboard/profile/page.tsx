@@ -23,9 +23,9 @@ export default function Profile() {
 
     return (
         <div className="max-w-2xl space-y-6">
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Your Profile</h1>
+            <h1 className="text-2xl font-bold text-white">Your Profile</h1>
 
-            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <div className="bg-slate-200 dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
                 <div className="flex items-center gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
                     <div className="w-20 h-20 rounded-full bg-blue-600 text-white text-3xl font-bold flex items-center justify-center shadow-lg shadow-blue-500/20">
                         {user.email?.charAt(0).toUpperCase()}
@@ -39,7 +39,7 @@ export default function Profile() {
                 <dl className="space-y-4">
                     <div>
                         <dt className="text-sm font-medium text-slate-500">User ID</dt>
-                        <dd className="font-mono text-sm bg-slate-50 dark:bg-slate-950 p-2 rounded-lg border border-slate-100 dark:border-slate-800 mt-1 dark:text-slate-300">{user.$id}</dd>
+                        <dd className="font-mono text-sm bg-slate-500 dark:bg-slate-950 p-2 rounded-lg border border-slate-100 dark:border-slate-800 mt-1 dark:text-slate-300">{user.$id}</dd>
                     </div>
                     <div>
                         <dt className="text-sm font-medium text-slate-500">Phone</dt>
